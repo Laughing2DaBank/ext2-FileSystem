@@ -3,6 +3,7 @@
 //
 #include <stdio.h>
 #include "structures.h"
+#include "bitmap.h"
 
 int main(void) {
 

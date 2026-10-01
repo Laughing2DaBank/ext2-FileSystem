@@ -66,15 +66,18 @@ typedef struct __attribute__((__packed__)) {
     uint16_t free_blocks_inGroup;
     uint16_t free_inodes_inGroup;
     uint16_t directories_inGroup;
+    //18-31 are unused so have some form of padding
+    uint8_t padding[14];
 
 }ext2_block_group;
 
 typedef struct __attribute__((__packed__)) {
     uint32_t inode;
     uint16_t totalSize_entry;
-    uint8_t name;
+    uint8_t name_length;
     uint8_t type;
 //we need some name characters field here dont know what they mean by N size in bytes
+    char name[255];
 }ext2_directory_entry;
 
 typedef enum {
@@ -101,7 +104,15 @@ typedef struct __attribute__((__packed__)) {
     uint32_t disk_sector_count;
     uint32_t flags;
     uint32_t os_specific;
-    //attributes missing
+    uint32_t i_block[15]; //12 direct 1 indirect 1 doubly indirect 1 triply indirect
+
+
+
+    uint32_t generation_number;
+    uint32_t file_acl; // ACL stands for access control list 
+    uint32_t directory_acl;
+    uint32_t frag_blockAddress;
+    uint8_t os_specific2[12];
 
 
 }ext2_inode;
