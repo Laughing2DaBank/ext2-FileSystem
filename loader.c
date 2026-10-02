@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "loader.h"
 
+#include <stdlib.h>
 
 
 //bitmap *block_bitmap = NULL;
@@ -38,17 +39,38 @@ int load_superblock(ext2_filesystem *fs) {
         fclose(fs->img);
         return 1;
     }
-    /*printf("superblock loaded successfully\n");
-    printf("superblock signature: %x\n",fs->sb.signature);
-    printf("total inode count:%u\n",fs->sb.inodes_count);
-    printf("total block count:%u\n",fs->sb.blocks_count);
-
-    uint32_t block_size = 1024 << fs->sb.log_block_size;
-    printf("block size:%u\n",block_size);*/
-
-
     return 0;
-
 };
 
+int load_group_desc(ext2_filesystem *fs) {
+
+    uint32_t  numberOfBlockGroups = fs->sb.blocks_count / fs->sb.blocks_per_group;
+    if (fs->sb.blocks_count % fs->sb.blocks_per_group != 0) {
+        numberOfBlockGroups++;
+    }
+    fs->gd = malloc(sizeof(ext2_group_desc)*numberOfBlockGroups);
+
+    if (!fs->gd) {
+        perror("failed to allocate group descriptor");
+        fclose(fs->img);
+        return 1;
+    }
+
+    if (fseek(fs->img,2048,SEEK_SET) != 0) {
+        perror("failed to seek group descriptor table");
+        free(fs->gd);
+        fclose(fs->img);
+        return 1;
+    }
+
+    size_t read_count = fread(fs->gd,sizeof(ext2_group_desc),numberOfBlockGroups,fs->img);
+    if (read_count != numberOfBlockGroups) {
+        perror("failed to read all group descriptor tables\n");
+        free(fs->gd);
+        fclose(fs->img);
+        return 1;
+    }
+
+    return 0;
+}
 

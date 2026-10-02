@@ -23,5 +23,5 @@ typedef struct {
 }ext2_filesystem;
 
 int load_superblock(ext2_filesystem *fs);
-
+int load_group_desc(ext2_filesystem *fs);
 #endif //EXT2_FILESYSTEM_LOADER_H
