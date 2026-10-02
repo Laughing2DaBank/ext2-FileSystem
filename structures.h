@@ -22,7 +22,7 @@ typedef struct __attribute__((__packed__)) {
     uint32_t last_write_time;
     uint16_t mount_count;
     uint16_t max_mount_count;
-    uint16_t signature;
+    uint16_t magic_number;
     uint16_t filesystem_state;
     uint16_t On_error;
     uint16_t Minor_version;
@@ -69,7 +69,7 @@ typedef struct __attribute__((__packed__)) {
     //18-31 are unused so have some form of padding
     uint8_t padding[14];
 
-}ext2_block_group;
+}ext2_group_desc;
 
 typedef struct __attribute__((__packed__)) {
     uint32_t inode;
@@ -109,7 +109,7 @@ typedef struct __attribute__((__packed__)) {
 
 
     uint32_t generation_number;
-    uint32_t file_acl; // ACL stands for access control list 
+    uint32_t file_acl; // ACL stands for access control list
     uint32_t directory_acl;
     uint32_t frag_blockAddress;
     uint8_t os_specific2[12];

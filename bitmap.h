@@ -13,6 +13,9 @@ typedef struct {
     uint32_t size;
 }bitmap;
 
+extern bitmap *block_bitmap;
+extern bitmap *inode_bitmap;
+
 
 bool bitmap_init(bitmap *b,uint32_t total_bits);//implemented
 void free_bitmap(bitmap *b);
