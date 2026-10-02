@@ -14,11 +14,11 @@ typedef struct {
 }bitmap;
 
 
-bool bitmap_init(bitmap *b,uint32_t total_bits);
+bool bitmap_init(bitmap *b,uint32_t total_bits);//implemented
 void free_bitmap(bitmap *b);
 
-void bit_allocate(bitmap *b,int bit_num);
-void bit_deallocate(bitmap *b,int bit_num);
-bool check_bitInUse(bitmap *b,int bit_num);
+void bit_allocate(bitmap *b,int bit_num);//implemented
+void bit_deallocate(bitmap *b,int bit_num);//implemented
+int check_bitInUse(bitmap *b,int bit_num);//implemented
 
 #endif //EXT2_FILESYSTEM_BITMAP_H

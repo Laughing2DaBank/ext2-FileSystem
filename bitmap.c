@@ -14,3 +14,29 @@ bool init_bitmap(bitmap *b , uint32_t total_bits) {
     return true;
 }
 
+void bit_allocate(bitmap *b,int bit_num) {
+    int byteIndex = bit_num >> 3;
+    int offset = bit_num % 8;
+    b->map[byteIndex] = (b->map[byteIndex] | (1<<offset));
+}
+
+int check_bitInUse(bitmap *b,int bit_num) {
+    int byteIndex = bit_num >> 3;
+    int offset = bit_num % 8;
+    return (b->map[byteIndex] & (1<<offset)) ? 1 : 0;
+}
+
+void bit_deallocate(bitmap *b,int bit_num) {
+    int byteIndex = bit_num >> 3;
+    int offset = bit_num % 8;
+    b->map[byteIndex] = (b->map[byteIndex] & (~(1<<offset)));
+}
+
+void free_bitmap(bitmap *b) {
+    if (b!=NULL && b->map != NULL) {
+        free(b->map);
+        b->map = NULL;
+    }
+}
+
+
