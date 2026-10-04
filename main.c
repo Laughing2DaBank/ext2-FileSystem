@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include "loader.h"
 #include <stdlib.h>
+#include <string.h>
+
+#include "operations.h"
 
 int main(void) {
 
@@ -21,6 +24,8 @@ int main(void) {
     printf("total block count:%u\n",fs.sb.blocks_count);
 
     uint32_t block_size = 1024 << fs.sb.log_block_size;
+    fs.block_size = block_size;
+    fs.inode_size = 256;
     printf("block size:%u\n",block_size);
 
     if (load_group_desc(&fs) !=0) {
@@ -42,6 +47,60 @@ int main(void) {
         printf("free inodes %u\n",fs.gd[i].free_inodes_inGroup);
         printf("used directories %u\n",fs.gd[i].directories_inGroup);
     }
+    int choice;
+    char input_path[256];
+
+    do {
+        printf("1. List Directory Contents\n");
+        printf("2. Read File Contents\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+
+        if (scanf("%d",&choice)!=1) {
+            printf("Invalid input\n");
+            while(getchar()!='\n');
+            continue;
+        }
+
+    }
+    while (getchar()!='\n');
+
+    switch (choice) {
+
+        case 1: {
+            printf("Enter the path to the directory: ");
+            if (fgets(input_path,256,stdin)!=NULL) {
+                input_path[strcspn(input_path,"\n")]=0;
+            }
+            uint32_t inode_number = resolve_path(&fs ,input_path);
+            if (inode_number == 0) {
+                printf("Directory not found\n");
+            }
+            else {
+                printf("contents of %s and Inode %u\n",input_path,inode_number);
+                traverse_directory(&fs,inode_number);
+
+            }
+        }
+        break;
+
+        case 2: {
+            printf("Enter the path to read ");
+            if (fgets(input_path,256,stdin)!=NULL) {
+                input_path[strcspn(input_path,"\n")]=0;
+                read_file(&fs,input_path);
+                printf("----\n\n");
+            }
+        }break;
+
+        default:
+            printf("Invalid choice. Try again.\n\n");
+    }
+
+
+
+
+
 
     free(fs.gd);
     fclose(fs.img);
