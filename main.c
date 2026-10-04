@@ -49,7 +49,7 @@ int main(void) {
     }
     int choice;
     char input_path[256];
-
+    char text[1024];
     do {
         printf("1. List Directory Contents\n");
         printf("2. Read File Contents\n");
@@ -92,9 +92,45 @@ int main(void) {
                 printf("----\n\n");
             }
         }break;
+        case 3: {
+            printf("Enter file path to write/overwrite");
+            scanf("%s", input_path);
+            printf("Enter text to write: ");
+            scanf(" %[^\n]", text);
+
+            uint32_t inode_num = resolve_path(&fs, input_path);
+            if (inode_num == 0) {
+                char *last_slash = strrchr(input_path, '/');
+                if (last_slash == input_path) {
+                    uint32_t parent_inode = resolve_path(&fs, "/");
+                    inode_num = allocate_inode(&fs, parent_inode);
+                    // TODO: need to implement a way to add new directory entries
+                }
+            }
+
+            if (inode_num != 0) {
+                write_to_inode(&fs, inode_num, text, strlen(text));
+            }
+            break;
+        }
+        case 4: {
+            printf("Enter file path: ");
+            scanf("%s", input_path);
+            printf("Enter text to append: ");
+            scanf(" %[^\n]", text);
+
+            uint32_t inode_num = resolve_path(&fs, input_path);
+            if (inode_num == 0) {
+                printf("file not found.\n");
+                break;
+            }
+            append_to_inode(&fs, inode_num, text, strlen(text));
+            break;
+        }break;
+
 
         default:
-            printf("Invalid choice. Try again.\n\n");
+            printf("invalid choice.\n\n");
     }
 
 

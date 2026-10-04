@@ -16,7 +16,7 @@
 }*/
 
 int load_superblock(ext2_filesystem *fs) {
-    fs->img = fopen(PATH,"rb");
+    fs->img = fopen(PATH,"r+b");
     if (!fs->img) {
         perror("failed to open image file");
         return 1;
