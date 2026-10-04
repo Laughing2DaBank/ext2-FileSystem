@@ -92,8 +92,8 @@ typedef enum {
 } directory_entry_type;
 
 typedef struct __attribute__((__packed__)) {
-    uint32_t type_perms;
-    uint32_t usr_id;
+    uint16_t type_perms;
+    uint16_t usr_id;
     uint32_t size;
     uint32_t access_time;
     uint32_t create_time;

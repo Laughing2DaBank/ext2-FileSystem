@@ -98,10 +98,6 @@ int main(void) {
     }
 
 
-
-
-
-
     free(fs.gd);
     fclose(fs.img);
     return 0;

@@ -9,7 +9,7 @@
 
 
 void traverse_directory(ext2_filesystem *fs, uint32_t inode_number) {
-    printf("DEBUG: block_size = %u, inode_size = %u\n", fs->block_size, fs->inode_size);
+
     uint32_t group_index = (inode_number-1) / fs->sb.inodes_per_group;
     uint32_t local_index = (inode_number-1) % fs->sb.inodes_per_group;
 
@@ -18,13 +18,9 @@ void traverse_directory(ext2_filesystem *fs, uint32_t inode_number) {
 
     ext2_inode inode;
     uint32_t inode_offset = (inodeTable_block * fs->block_size) + (local_index*fs->inode_size);
-    printf("DEBUG: Group 0 bg_inode_table = %u (hex: 0x%X)\n",
-       group->starting_block_inodeTable, group->starting_block_inodeTable);
-    printf("DEBUG: Inode %u -> Group %u, LocalIdx %u, TableBlock %u, Offset %u\n",
-       inode_number, group_index, local_index, inodeTable_block, inode_offset);
+
     fseek(fs->img , inode_offset , SEEK_SET);
     fread(&inode,sizeof(ext2_inode),1,fs->img);
-    printf("DEBUG: Inode %u type_perms = 0x%X\n", inode_number, inode.type_perms);
     if ((inode.type_perms & 0xF000) != 0x4000) {
         fprintf(stderr,"inode %u is not a directory\n", inode_number);
         return;
@@ -165,29 +161,4 @@ uint32_t allocate_block(ext2_filesystem *fs, bitmap *block_bitmap) {
     }
     return 0;
 }
-
-
-
-
-/*void write_file(ext2_filesystem *fs, char *path, char *filename , char*contents,uint32_t data_len) {
-    uint32_t parent_inode_number = resolve_path(fs,path);
-    if (parent_inode_number == 0) {
-        fprintf(stderr,"Could not find parent directory %u\n",parent_inode_number);
-        return;
-    }
-
-    fseek(fs->img, )
-
-
-
-
-
-
-
-}*/
-
-
-
-
-
 
