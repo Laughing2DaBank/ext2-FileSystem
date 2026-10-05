@@ -93,7 +93,9 @@ The append command is basically just read + write , we read whatever the file co
 4. **Lack of Journaling:** Any unexpected crashes or unclean shutdowns lack journaling support.
 
 
-### What is lock free programming ? 
+### Regarding The Bonuses
+
+What is lock free programming ? 
 
 File locking is basically the mechanism that restricts access to the files by allowing only one user or process to modify or delete it at a specific time 
 The way I might approach the bonus questions is basically , we will create a clone of every file you are reading or writing almost like a backup file / buffer file .. we will then let whatever processes and users make changes to the same file - We will create two separate clones and then you as the user get the final say on which clone to keep and which one to delete.
