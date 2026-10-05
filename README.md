@@ -94,10 +94,25 @@ The append command is basically just read + write , we read whatever the file co
 
 <img width="1259" height="226" alt="Screenshot_20261002_200530" src="https://github.com/user-attachments/assets/f72039e0-b841-47a3-a54d-7b1cc5b1735d" />
 
+
+
 <img width="1013" height="291" alt="Screenshot_20261004_155752" src="https://github.com/user-attachments/assets/1c9120ae-2716-4be0-a1f4-b008543a32ad" />
+
+
 
 <img width="1259" height="138" alt="Screenshot_20261004_163957" src="https://github.com/user-attachments/assets/52ecd9dd-ea9f-48d3-b1cb-98e35baaa43b" />
 
+
+
 <img width="1259" height="226" alt="Screenshot_20261002_200530" src="https://github.com/user-attachments/assets/cfed7568-e155-47a5-8de7-8eaa682de5c6" />
 
+
 the window on the right is the output verified with dumpe2fs 
+
+<img width="601" height="453" alt="Screenshot_20261005_213804" src="https://github.com/user-attachments/assets/a83d977d-2269-4b1c-aa24-be1bcddf0e83" />
+
+
+
+<img width="857" height="362" alt="image" src="https://github.com/user-attachments/assets/7311d872-f0b8-404a-add0-58b51712602e" />
+
+
