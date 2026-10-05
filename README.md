@@ -92,6 +92,13 @@ The append command is basically just read + write , we read whatever the file co
 3. **Resource Inconsistency:** In theory, you can use up all the inode numbers while barely using any disk space.
 4. **Lack of Journaling:** Any unexpected crashes or unclean shutdowns lack journaling support.
 
+
+### What is lock free programming ? 
+
+File locking is basically the mechanism that restricts access to the files by allowing only one user or process to modify or delete it at a specific time 
+The way I might approach the bonus questions is basically , we will create a clone of every file you are reading or writing almost like a backup file / buffer file .. we will then let whatever processes and users make changes to the same file - We will create two separate clones and then you as the user get the final say on which clone to keep and which one to delete.
+
+
 <img width="1259" height="226" alt="Screenshot_20261002_200530" src="https://github.com/user-attachments/assets/f72039e0-b841-47a3-a54d-7b1cc5b1735d" />
 
 
