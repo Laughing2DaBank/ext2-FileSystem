@@ -20,14 +20,14 @@ void traverse_directory(ext2_filesystem *fs, uint32_t inode_number) {
     uint32_t inode_offset = (inodeTable_block * fs->block_size) + (local_index*fs->inode_size);
 
     fseek(fs->img , inode_offset , SEEK_SET);
-    fread(&inode,sizeof(ext2_inode),1,fs->img);
+    fread(&inode,sizeof(ext2_inode),1,fs->img); //loaded in your inode
     if ((inode.type_perms & 0xF000) != 0x4000) {
         fprintf(stderr,"inode %u is not a directory\n", inode_number);
         return;
-    }
+    } //simple check if dir or not
     uint8_t *buf = malloc(fs->block_size);
     if (!buf) return;
-
+//run the loop till either you run out of direct pointers or any one of the direct pointers are empty
     for (int i =0; i<12 && inode.i_block[i] != 0; i++) {
         fseek(fs->img,inode.i_block[i] * fs->block_size,SEEK_SET); //check this again
         if (fread(buf,1,fs->block_size,fs->img) != fs->block_size) break;
@@ -212,23 +212,44 @@ void write_to_inode(ext2_filesystem *fs, uint32_t inode_number, const char *cont
         return;
     }
 
-    if (inode.i_block[0] == 0) {
-        fprintf(stderr, "Error: Inode %u has no data block allocated yet. (Allocation layer required).\n", inode_number);
-        return;
+
+
+    uint32_t bytes_written = 0;
+    uint32_t block_size= fs->block_size;
+
+    for (int i =0; i<12 && bytes_written<data_len; i++) {
+
+        if (inode.i_block[0] == 0) {
+            fprintf(stderr, "Error: Inode %u has no data block allocated yet\n", inode_number);
+            break;
+        }
+        uint32_t remaining_bytes = data_len - bytes_written;
+        uint32_t chunk_size = (remaining_bytes > block_size) ? block_size : remaining_bytes;
+
+        fseek(fs->img, inode.i_block[i] * fs->block_size, SEEK_SET);
+        fwrite(contents + bytes_written, 1, chunk_size, fs->img);
+        bytes_written +=chunk_size;
+
     }
+    if (bytes_written < data_len) {
+        fprintf(stderr, "Warning: Data exceeded 12 direct blocks\n");
 
-    fseek(fs->img, inode.i_block[0] * fs->block_size, SEEK_SET);
-    uint32_t bytes_to_write = (data_len > fs->block_size) ? fs->block_size : data_len;
-    fwrite(contents, 1, bytes_to_write, fs->img);
+    }
+   // fseek(fs->img, inode.i_block[0] * fs->block_size, SEEK_SET);
+   // uint32_t bytes_to_write = (data_len > fs->block_size) ? fs->block_size : data_len;
+   // fwrite(contents, 1, bytes_to_write, fs->img);
 
-    inode.size = bytes_to_write;
-    inode.disk_sector_count = (bytes_to_write + 511) / 512 * 2;
+
+
+
+    inode.size = bytes_written;
+    inode.disk_sector_count = (bytes_written + 511) / 512 * 2;
 
     fseek(fs->img, inode_offset, SEEK_SET);
     fwrite(&inode, sizeof(ext2_inode), 1, fs->img);
     fflush(fs->img);
 
-    printf("Successfully wrote %u bytes to Inode %u (Block %u)\n", bytes_to_write, inode_number, inode.i_block[0]);
+    printf("Successfully wrote %u bytes to Inode %u (Block %u)\n", bytes_written, inode_number, inode.i_block[0]);
 }
 
 
